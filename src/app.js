@@ -2,13 +2,15 @@ const express = require('express')
 const helmet = require('helmet')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
+const path = require('path')
 const authRoutes = require('./routes/authRoutes')
 
 const app = express()
 
-app.use(helmet())
+app.use(helmet({ contentSecurityPolicy: false }))
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(express.static(path.join(__dirname, 'public')))
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
