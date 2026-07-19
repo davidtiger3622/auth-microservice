@@ -15,7 +15,7 @@ jobs:
         image: postgres:16
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: david3622
+          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
           POSTGRES_DB: auth_microservice_test
         ports:
           - 5432:5432
@@ -36,6 +36,17 @@ jobs:
 
       - run: psql -h localhost -U postgres -d auth_microservice_test -f src/config/schema.sql
         env:
-          PGPASSWORD: david3622
+          PGPASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
 
       - run: npm test
+        env:
+          NODE_ENV: test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: auth_microservice_test
+          DB_USER: postgres
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          JWT_ACCESS_SECRET: test_access_secret_key
+          JWT_REFRESH_SECRET: test_refresh_secret_key
+          JWT_ACCESS_EXPIRES_IN: 15m
+          JWT_REFRESH_EXPIRES_IN: 7d
