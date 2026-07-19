@@ -1,164 +1,171 @@
 {
-    "info": {
-      "name": "Auth Microservice",
-      "description": "A standalone authentication API with JWT, refresh tokens, and password reset.",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  "info": {
+    "name": "Auth Microservice",
+    "description": "A standalone authentication API with JWT, refresh tokens, and password reset.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
     },
-    "variable": [
-      {
-        "key": "base_url",
-        "value": "http://localhost:5000",
-        "type": "string"
-      },
-      {
-        "key": "access_token",
-        "value": "",
-        "type": "string"
-      },
-      {
-        "key": "refresh_token",
-        "value": "",
-        "type": "string"
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
       }
-    ],
-    "item": [
-      {
-        "name": "Health Check",
-        "request": {
-          "method": "GET",
-          "url": "{{base_url}}/health"
-        }
-      },
-      {
-        "name": "Register",
-        "request": {
-          "method": "POST",
-          "url": "{{base_url}}/api/auth/register",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"SecurePass123\"\n}"
-          }
-        }
-      },
-      {
-        "name": "Login",
-        "event": [
+    },
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/auth/register",
+        "header": [
           {
-            "listen": "test",
-            "script": {
-              "exec": [
-                "const res = pm.response.json();",
-                "pm.collectionVariables.set('access_token', res.accessToken);",
-                "pm.collectionVariables.set('refresh_token', res.refreshToken);"
-              ]
-            }
+            "key": "Content-Type",
+            "value": "application/json"
           }
         ],
-        "request": {
-          "method": "POST",
-          "url": "{{base_url}}/api/auth/login",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"SecurePass123\"\n}"
-          }
-        }
-      },
-      {
-        "name": "Get Current User",
-        "request": {
-          "method": "GET",
-          "url": "{{base_url}}/api/auth/me",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{access_token}}"
-            }
-          ]
-        }
-      },
-      {
-        "name": "Refresh Token",
-        "request": {
-          "method": "POST",
-          "url": "{{base_url}}/api/auth/refresh-token",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
-          }
-        }
-      },
-      {
-        "name": "Forgot Password",
-        "request": {
-          "method": "POST",
-          "url": "{{base_url}}/api/auth/forgot-password",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"email\": \"user@example.com\"\n}"
-          }
-        }
-      },
-      {
-        "name": "Reset Password",
-        "request": {
-          "method": "POST",
-          "url": "{{base_url}}/api/auth/reset-password",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"token\": \"paste_reset_token_here\",\n  \"password\": \"NewSecurePass123\"\n}"
-          }
-        }
-      },
-      {
-        "name": "Logout",
-        "request": {
-          "method": "POST",
-          "url": "{{base_url}}/api/auth/logout",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "key": "Authorization",
-              "value": "Bearer {{access_token}}"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
-          }
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"SecurePass123\"\n}"
         }
       }
-    ]
-  }
+    },
+    {
+      "name": "Verify Email",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/auth/verify-email?token=paste_verification_token_here"
+      }
+    },
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const res = pm.response.json();",
+              "pm.collectionVariables.set('access_token', res.accessToken);",
+              "pm.collectionVariables.set('refresh_token', res.refreshToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Current User",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/auth/me",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Refresh Token",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/auth/refresh-token",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Forgot Password",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/auth/forgot-password",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"user@example.com\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Reset Password",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/auth/reset-password",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"token\": \"paste_reset_token_here\",\n  \"password\": \"NewSecurePass123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/auth/logout",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+        }
+      }
+    }
+  ]
+}
