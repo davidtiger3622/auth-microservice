@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer')
-const { email: emailConfig } = require('../config/env')
+const { email: emailConfig, appBaseUrl } = require('../config/env')
 
 const transporter = nodemailer.createTransport({
   host: emailConfig.host,
@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 })
 
 const sendPasswordResetEmail = async (toEmail, resetToken) => {
-  const resetUrl = `http://localhost:5000/api/auth/reset-password?token=${resetToken}`
+  const resetUrl = `${appBaseUrl}/api/auth/reset-password?token=${resetToken}`
 
   await transporter.sendMail({
     from: emailConfig.from,
@@ -28,4 +28,21 @@ const sendPasswordResetEmail = async (toEmail, resetToken) => {
   })
 }
 
-module.exports = { sendPasswordResetEmail }
+const sendVerificationEmail = async (toEmail, verificationToken) => {
+  const verifyUrl = `${appBaseUrl}/api/auth/verify-email?token=${verificationToken}`
+
+  await transporter.sendMail({
+    from: emailConfig.from,
+    to: toEmail,
+    subject: 'Verify Your Email',
+    html: `
+      <h2>Welcome</h2>
+      <p>Please verify your email address by clicking the link below.</p>
+      <p>This link expires in 24 hours.</p>
+      <a href="${verifyUrl}">Verify Email</a>
+      <p>If you did not create this account, ignore this email.</p>
+    `
+  })
+}
+
+module.exports = { sendPasswordResetEmail, sendVerificationEmail }
