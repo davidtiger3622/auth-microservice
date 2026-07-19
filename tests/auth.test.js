@@ -106,4 +106,62 @@ describe('POST /api/auth/login', () => {
       expect(res.status).toBe(400)
     })
   })
+
+  describe('GET /api/auth/me', () => {
+    let accessToken
   
+    beforeEach(async () => {
+      await request(app)
+        .post('/api/auth/register')
+        .send({ email: 'meuser@example.com', password: 'SecurePass123' })
+  
+      const loginRes = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'meuser@example.com', password: 'SecurePass123' })
+  
+      accessToken = loginRes.body.accessToken
+    })
+  
+    it('returns the current user with a valid token', async () => {
+      const res = await request(app)
+        .get('/api/auth/me')
+        .set('Authorization', `Bearer ${accessToken}`)
+  
+      expect(res.status).toBe(200)
+      expect(res.body.user.email).toBe('meuser@example.com')
+    })
+  
+    it('rejects request with no authorization header', async () => {
+      const res = await request(app).get('/api/auth/me')
+  
+      expect(res.status).toBe(401)
+    })
+  
+    it('rejects request with malformed authorization header', async () => {
+      const res = await request(app)
+        .get('/api/auth/me')
+        .set('Authorization', accessToken)
+  
+      expect(res.status).toBe(401)
+    })
+  
+    it('rejects request with an invalid token', async () => {
+      const res = await request(app)
+        .get('/api/auth/me')
+        .set('Authorization', 'Bearer not.a.real.token')
+  
+      expect(res.status).toBe(401)
+    })
+  
+    it('rejects request with an expired token', async () => {
+      const jwt = require('jsonwebtoken')
+      const { jwt: jwtConfig } = require('../src/config/env')
+      const expiredToken = jwt.sign({ userId: 1 }, jwtConfig.accessSecret, { expiresIn: '-10s' })
+  
+      const res = await request(app)
+        .get('/api/auth/me')
+        .set('Authorization', `Bearer ${expiredToken}`)
+  
+      expect(res.status).toBe(401)
+    })
+  })
