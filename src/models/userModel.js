@@ -65,6 +65,31 @@ const deletePasswordResetToken = async (token) => {
   await pool.query('DELETE FROM password_reset_tokens WHERE token = $1', [token])
 }
 
+const saveEmailVerificationToken = async (userId, token, expiresAt) => {
+  await pool.query('DELETE FROM email_verification_tokens WHERE user_id = $1', [userId])
+  const result = await pool.query(
+    'INSERT INTO email_verification_tokens (user_id, token, expires_at) VALUES ($1, $2, $3) RETURNING *',
+    [userId, token, expiresAt]
+  )
+  return result.rows[0]
+}
+
+const findEmailVerificationToken = async (token) => {
+  const result = await pool.query(
+    'SELECT * FROM email_verification_tokens WHERE token = $1',
+    [token]
+  )
+  return result.rows[0]
+}
+
+const deleteEmailVerificationToken = async (token) => {
+  await pool.query('DELETE FROM email_verification_tokens WHERE token = $1', [token])
+}
+
+const markUserAsVerified = async (userId) => {
+  await pool.query('UPDATE users SET is_verified = true WHERE id = $1', [userId])
+}
+
 const updateUserPassword = async (userId, hashedPassword) => {
   await pool.query(
     'UPDATE users SET password = $1, updated_at = NOW() WHERE id = $2',
@@ -82,5 +107,9 @@ module.exports = {
   savePasswordResetToken,
   findPasswordResetToken,
   deletePasswordResetToken,
-  updateUserPassword
+  updateUserPassword,
+  saveEmailVerificationToken,
+  findEmailVerificationToken,
+  deleteEmailVerificationToken,
+  markUserAsVerified
 }
