@@ -1,5 +1,7 @@
 # Auth Microservice
 
+![Swagger UI](docs/swagger-screenshot.png)
+
 A standalone authentication REST API built with Node.js, Express, and PostgreSQL. Designed as a plug-and-play microservice that can be integrated into any project requiring user authentication.
 
 ## Features
