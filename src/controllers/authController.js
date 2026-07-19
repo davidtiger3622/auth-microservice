@@ -12,11 +12,15 @@ const {
   savePasswordResetToken,
   findPasswordResetToken,
   deletePasswordResetToken,
-  updateUserPassword
+  updateUserPassword,
+  saveEmailVerificationToken,
+  findEmailVerificationToken,
+  deleteEmailVerificationToken,
+  markUserAsVerified
 } = require('../models/userModel')
 const { generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils')
 const { jwt: jwtConfig } = require('../config/env')
-const { sendPasswordResetEmail } = require('../utils/emailUtils')
+const { sendPasswordResetEmail, sendVerificationEmail } = require('../utils/emailUtils')
 
 const register = async (req, res) => {
   const errors = validationResult(req)
@@ -35,8 +39,15 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12)
     const user = await createUser(email, hashedPassword)
 
+    const verificationToken = crypto.randomBytes(32).toString('hex')
+    const expiresAt = new Date()
+    expiresAt.setHours(expiresAt.getHours() + 24)
+
+    await saveEmailVerificationToken(user.id, verificationToken, expiresAt)
+    await sendVerificationEmail(email, verificationToken)
+
     return res.status(201).json({
-      message: 'User registered successfully',
+      message: 'User registered successfully. Please check your email to verify your account.',
       user
     })
   } catch (error) {
