@@ -139,10 +139,27 @@ const refreshToken = async (req, res) => {
       return res.status(401).json({ error: 'Refresh token expired' })
     }
 
-    const decoded = jwt.verify(token, jwtConfig.refreshSecret)
-    const newAccessToken = generateAccessToken(decoded.userId)
+    let decoded
+    try {
+      decoded = jwt.verify(token, jwtConfig.refreshSecret)
+    } catch (error) {
+      await deleteRefreshToken(token)
+      return res.status(401).json({ error: 'Invalid refresh token' })
+    }
 
-    return res.status(200).json({ accessToken: newAccessToken })
+    await deleteRefreshToken(token)
+
+    const newAccessToken = generateAccessToken(decoded.userId)
+    const newRefreshToken = generateRefreshToken(decoded.userId)
+
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 7)
+    await saveRefreshToken(decoded.userId, newRefreshToken, expiresAt)
+
+    return res.status(200).json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
+    })
   } catch (error) {
     console.error('Refresh token error:', error)
     return res.status(500).json({ error: 'Internal server error' })
