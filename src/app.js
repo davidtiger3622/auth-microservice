@@ -8,6 +8,7 @@ const swaggerUi = require('swagger-ui-express')
 const swaggerSpec = require('./config/swagger')
 
 const app = express()
+app.set('trust proxy', 1)
 
 app.use(helmet({ contentSecurityPolicy: false }))
 app.use(morgan('dev'))
