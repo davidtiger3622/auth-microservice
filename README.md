@@ -2,6 +2,9 @@
 
 ![Swagger UI](docs/swagger-screenshot.png)
 
+**Live demo:** https://auth-microservice-0shc.onrender.com
+**Live API docs:** https://auth-microservice-0shc.onrender.com/api-docs
+
 A standalone authentication REST API built with Node.js, Express, and PostgreSQL. Designed as a plug-and-play microservice that can be integrated into any project requiring user authentication.
 
 ## Features
@@ -39,6 +42,8 @@ src/
 ```
 
 ## Getting Started
+
+> **Note:** The live demo runs on a free-tier instance and may take up to a minute to respond if it's been idle the first request wakes it up.
 
 ### Prerequisites
 
