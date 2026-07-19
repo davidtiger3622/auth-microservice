@@ -4,6 +4,8 @@ const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
 const path = require('path')
 const authRoutes = require('./routes/authRoutes')
+const swaggerUi = require('swagger-ui-express')
+const swaggerSpec = require('./config/swagger')
 
 const app = express()
 
@@ -36,5 +38,6 @@ app.use('/api/auth/login', authLimiter)
 app.use('/api/auth/register', authLimiter)
 app.use('/api/auth/forgot-password', authLimiter)
 app.use('/api/auth', authRoutes)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 module.exports = app

@@ -4,9 +4,9 @@
   "description": "A standalone authentication microservice with JWT, refresh tokens, and password reset",
   "main": "src/index.js",
   "scripts": {
-  "start": "node src/index.js",
-  "dev": "nodemon src/index.js",
-  "test": "dotenv -e .env.test -- jest --runInBand"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "dotenv -e .env.test -- jest --runInBand"
   },
   "keywords": [
     "auth",
@@ -28,7 +28,9 @@
     "morgan": "^1.11.0",
     "nodemailer": "^9.0.1",
     "pg": "^8.22.0",
-    "uuid": "^14.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^14.0.1",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "dotenv-cli": "^11.0.0",
