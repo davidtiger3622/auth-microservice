@@ -207,4 +207,32 @@ const resetPassword = async (req, res) => {
   }
 }
 
-module.exports = { register, login, getMe, logout, refreshToken, forgotPassword, resetPassword }
+const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query
+
+    if (!token) {
+      return res.status(400).json({ error: 'Verification token required' })
+    }
+
+    const stored = await findEmailVerificationToken(token)
+    if (!stored) {
+      return res.status(400).json({ error: 'Invalid or expired verification token' })
+    }
+
+    if (new Date() > new Date(stored.expires_at)) {
+      await deleteEmailVerificationToken(token)
+      return res.status(400).json({ error: 'Invalid or expired verification token' })
+    }
+
+    await markUserAsVerified(stored.user_id)
+    await deleteEmailVerificationToken(token)
+
+    return res.status(200).json({ message: 'Email verified successfully' })
+  } catch (error) {
+    console.error('Verify email error:', error)
+    return res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+module.exports = { register, login, getMe, logout, refreshToken, forgotPassword, resetPassword, verifyEmail }
