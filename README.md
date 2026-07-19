@@ -90,6 +90,46 @@ psql -U postgres -d auth_microservice -f src/config/schema.sql
 ```bash
 npm run dev
 ```
+## Running with Docker
+
+If you'd rather not install Node.js or PostgreSQL locally, the entire service can run in containers.
+
+### Prerequisites
+
+- Docker Desktop
+
+### Steps
+
+1. Create a `.env` file in the root directory (same variables as the manual setup above)
+
+2. Build and start the app and database together
+
+```bash
+docker compose up --build
+```
+
+This automatically builds the app image, starts a PostgreSQL container, loads the schema on first run, and starts the API — no manual database setup required.
+
+3. Confirm it's running
+
+```bash
+curl http://localhost:5000/health
+```
+
+4. Stop the containers
+
+```bash
+docker compose down
+```
+
+Add `-v` to also remove the database volume and start fresh next time:
+
+```bash
+docker compose down -v
+```
+
+> **Note:** The Postgres container is exposed on host port `5433` (not `5432`) to avoid conflicts with a locally installed PostgreSQL instance. The app connects to it internally over Docker's network regardless.
+
 
 ## API Endpoints
 
