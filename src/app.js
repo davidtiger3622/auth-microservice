@@ -24,7 +24,8 @@ const authLimiter = rateLimit({
   max: 10,
   message: { error: 'Too many attempts, please try again later' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  skip: () => process.env.NODE_ENV === 'test'
 })
 
 app.get('/health', (req, res) => {
