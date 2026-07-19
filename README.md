@@ -5,6 +5,7 @@ A standalone authentication REST API built with Node.js, Express, and PostgreSQL
 ## Features
 
 - User registration with input validation
+- Email verification on registration
 - Login with JWT access and refresh tokens
 - Protected routes via Bearer token authentication
 - Refresh token rotation
@@ -102,6 +103,7 @@ npm run dev
 | POST | `/api/auth/refresh-token` | Get new access token | No |
 | POST | `/api/auth/forgot-password` | Request password reset email | No |
 | POST | `/api/auth/reset-password` | Reset password with token | No |
+| GET | `/api/auth/verify-email` | Verify email via emailed token | No |
 
 ## Request Examples
 
@@ -112,6 +114,11 @@ POST /api/auth/register
   "email": "user@example.com",
   "password": "SecurePass123"
 }
+
+```
+**Verify Email**
+```
+GET /api/auth/verify-email?token=token_from_email
 ```
 
 **Login**
