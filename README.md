@@ -210,10 +210,10 @@ POST /api/auth/reset-password
 
 ## Security Highlights
 
-- Passwords hashed with bcrypt at cost factor 12
-- JWT access tokens expire in 15 minutes
-- Refresh tokens stored in database and invalidated on logout
-- Rate limiting: 100 requests per 15 minutes
-- HTTP security headers via helmet
-- Input validation and sanitization on all endpoints
-- Password reset tokens are single-use and expire in 1 hour
+- Passwords hashed with bcrypt at cost factor 12.
+- JWT access tokens expire in 15 minutes.
+- Refresh tokens stored in database and invalidated on logout.
+- Rate limiting: 100 requests per 15 minutes.
+- HTTP security headers via helmet.
+- Input validation and sanitization on all endpoints.
+- Password reset tokens are single-use and expire in 1 hour.
